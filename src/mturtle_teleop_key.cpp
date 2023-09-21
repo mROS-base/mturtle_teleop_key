@@ -15,11 +15,24 @@
 #include <unistd.h>
 #endif
 
-static constexpr char KEYCODE_RIGHT = 0x43;
-static constexpr char KEYCODE_LEFT = 0x44;
-static constexpr char KEYCODE_UP = 0x41;
-static constexpr char KEYCODE_DOWN = 0x42;
-static constexpr char KEYCODE_Q = 0x71;
+namespace {
+constexpr char KEYCODE_U = 'u';
+constexpr char KEYCODE_I = 'i';
+constexpr char KEYCODE_O = 'o';
+constexpr char KEYCODE_L = 'l';
+constexpr char KEYCODE_PERIOD = '.';
+constexpr char KEYCODE_COMMA = ',';
+constexpr char KEYCODE_M = 'm';
+constexpr char KEYCODE_J = 'j';
+constexpr char KEYCODE_K = 'k';
+constexpr char KEYCODE_Q = 'q';
+constexpr char KEYCODE_W = 'w';
+constexpr char KEYCODE_X = 'x';
+constexpr char KEYCODE_E = 'e';
+constexpr char KEYCODE_C = 'c';
+constexpr char KEYCODE_R = 'r';
+constexpr char KEYCODE_V = 'v';
+} // namespace
 
 bool running = true;
 
@@ -73,16 +86,38 @@ public:
         break;
       }
 
-      if (record.Event.KeyEvent.wVirtualKeyCode == VK_LEFT) {
-        c = KEYCODE_LEFT;
-      } else if (record.Event.KeyEvent.wVirtualKeyCode == VK_UP) {
-        c = KEYCODE_UP;
-      } else if (record.Event.KeyEvent.wVirtualKeyCode == VK_RIGHT) {
-        c = KEYCODE_RIGHT;
-      } else if (record.Event.KeyEvent.wVirtualKeyCode == VK_DOWN) {
-        c = KEYCODE_DOWN;
+      if (record.Event.KeyEvent.wVirtualKeyCode == 0x55) {
+        c = KEYCODE_U;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x49) {
+        c = KEYCODE_I;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x4F) {
+        c = KEYCODE_O;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x4C) {
+        c = KEYCODE_L;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == VK_OEM_PERIOD) {
+        c = KEYCODE_PERIOD;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == VK_OEM_COMMA) {
+        c = KEYCODE_COMMA;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x4D) {
+        c = KEYCODE_M;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x4A) {
+        c = KEYCODE_J;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x4B) {
+        c = KEYCODE_K;
       } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x51) {
         c = KEYCODE_Q;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x57) {
+        c = KEYCODE_W;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x58) {
+        c = KEYCODE_X;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x45) {
+        c = KEYCODE_E;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x43) {
+        c = KEYCODE_C;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x52) {
+        c = KEYCODE_R;
+      } else if (record.Event.KeyEvent.wVirtualKeyCode == 0x56) {
+        c = KEYCODE_V;
       }
       break;
 
@@ -120,7 +155,7 @@ private:
 class TeleopTurtle final {
 public:
   TeleopTurtle() {
-    nh_ = rclcpp::Node::make_shared("teleop_turtle");
+    nh_ = rclcpp::Node::make_shared("mteleop_turtle");
     nh_->declare_parameter("scale_angular", 2.0);
     nh_->declare_parameter("scale_linear", 2.0);
 
@@ -133,10 +168,18 @@ public:
 
     std::thread{std::bind(&TeleopTurtle::spin, this)}.detach();
 
-    std::puts("Reading from keyboard");
-    std::puts("---------------------------");
-    std::puts("Use arrow keys to move the turtle.");
-    std::puts("'Q' to quit.");
+    std::puts(R"(Reading from keyboard
+---------------------------
+O|L|.|,|M|J|U|I keys to move around.
+'K' to stop the turtle.
+W|X to increase/decrease maximum speeds by 10%.
+E|C to increase/decrease linear speed by 10%.
+R|V to increase/decrease angular speed by 10%.
+'Q' to quit.
+)");
+
+    double linear = 0.5;
+    double angular = 1.0;
 
     while (running) {
       // get the next event from the keyboard
@@ -147,27 +190,92 @@ public:
         return -1;
       }
 
-      double linear = 0.0;
-      double angular = 0.0;
-
       RCLCPP_DEBUG(nh_->get_logger(), "value: 0x%02X\n", c);
 
+      bool publish = false;
+      double lin = 0.0;
+      double ang = 0.0;
+
       switch (c) {
-      case KEYCODE_LEFT:
-        RCLCPP_DEBUG(nh_->get_logger(), "LEFT");
-        angular = 1.0;
+      case KEYCODE_W:
+        RCLCPP_DEBUG(nh_->get_logger(), "W");
+        linear *= 1.1;
+        angular *= 1.1;
         break;
-      case KEYCODE_RIGHT:
-        RCLCPP_DEBUG(nh_->get_logger(), "RIGHT");
-        angular = -1.0;
+      case KEYCODE_X:
+        RCLCPP_DEBUG(nh_->get_logger(), "X");
+        linear *= 0.9;
+        angular *= 0.9;
         break;
-      case KEYCODE_UP:
-        RCLCPP_DEBUG(nh_->get_logger(), "UP");
-        linear = 1.0;
+      case KEYCODE_E:
+        RCLCPP_DEBUG(nh_->get_logger(), "E");
+        linear *= 1.1;
         break;
-      case KEYCODE_DOWN:
-        RCLCPP_DEBUG(nh_->get_logger(), "DOWN");
-        linear = -1.0;
+      case KEYCODE_C:
+        RCLCPP_DEBUG(nh_->get_logger(), "C");
+        linear *= 0.9;
+        break;
+      case KEYCODE_R:
+        RCLCPP_DEBUG(nh_->get_logger(), "R");
+        angular *= 1.1;
+        break;
+      case KEYCODE_V:
+        RCLCPP_DEBUG(nh_->get_logger(), "V");
+        angular *= 0.9;
+        break;
+      case KEYCODE_U:
+        RCLCPP_DEBUG(nh_->get_logger(), "U");
+        lin = linear;
+        ang = angular;
+        publish = true;
+        break;
+      case KEYCODE_I:
+        RCLCPP_DEBUG(nh_->get_logger(), "I");
+        lin = linear;
+        ang = 0.0;
+        publish = true;
+        break;
+      case KEYCODE_O:
+        RCLCPP_DEBUG(nh_->get_logger(), "O");
+        lin = linear;
+        ang = -angular;
+        publish = true;
+        break;
+      case KEYCODE_L:
+        RCLCPP_DEBUG(nh_->get_logger(), "L");
+        lin = 0.0;
+        ang = -angular;
+        publish = true;
+        break;
+      case KEYCODE_PERIOD:
+        RCLCPP_DEBUG(nh_->get_logger(), ".");
+        lin = -linear;
+        ang = angular;
+        publish = true;
+        break;
+      case KEYCODE_COMMA:
+        RCLCPP_DEBUG(nh_->get_logger(), ",");
+        lin = -linear;
+        ang = 0.0;
+        publish = true;
+        break;
+      case KEYCODE_M:
+        RCLCPP_DEBUG(nh_->get_logger(), "M");
+        lin = -linear;
+        ang = -angular;
+        publish = true;
+        break;
+      case KEYCODE_J:
+        RCLCPP_DEBUG(nh_->get_logger(), "J");
+        lin = 0.0;
+        ang = angular;
+        publish = true;
+        break;
+      case KEYCODE_K:
+        RCLCPP_DEBUG(nh_->get_logger(), "J");
+        lin = 0.0;
+        ang = 0.0;
+        publish = true;
         break;
       case KEYCODE_Q:
         RCLCPP_DEBUG(nh_->get_logger(), "quit");
@@ -180,12 +288,10 @@ public:
         break;
       }
 
-      if (running && (linear != 0.0 || angular != 0.0)) {
+      if (running && publish) {
         geometry_msgs::msg::Twist twist;
-        twist.angular.z =
-            nh_->get_parameter("scale_angular").as_double() * angular;
-        twist.linear.x =
-            nh_->get_parameter("scale_linear").as_double() * linear;
+        twist.angular.z = nh_->get_parameter("scale_angular").as_double() * ang;
+        twist.linear.x = nh_->get_parameter("scale_linear").as_double() * lin;
         twist_pub_->publish(twist);
       }
     }
