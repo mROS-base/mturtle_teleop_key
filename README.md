@@ -33,7 +33,7 @@ R|V to increase/decrease angular speed by 10%.
 
 | Topic | Type | Direcetion | Description |
 | --- | --- | --- | --- |
-| `turtle1/cmd_vel` | `geometry_msgs/Twist` | pub | Velocity command. |
+| `cmd_vel` | `geometry_msgs/Twist` | pub | Velocity command. |
 
 ## Parameters
 
