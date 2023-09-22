@@ -2,6 +2,8 @@
 
 turtle_teleop_key for mturtlesim (mROS 2 dedicated version of turtlesim)
 
+original code is from [ros/tutorials](https://github.com/ros/ros_tutorials/blob/humble/turtlesim/tutorials/teleop_turtle_key.cpp)
+
 ## Build
 
 ```
@@ -31,7 +33,7 @@ R|V to increase/decrease angular speed by 10%.
 
 | Topic | Type | Direcetion | Description |
 | --- | --- | --- | --- |
-| `turtle1/cmd_vel` | `geometry_msgs/Twist` | pub | Velocity command. |
+| `cmd_vel` | `geometry_msgs/Twist` | pub | Velocity command. |
 
 ## Parameters
 
