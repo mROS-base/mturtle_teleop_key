@@ -156,11 +156,10 @@ class TeleopTurtle final {
 public:
   TeleopTurtle() {
     nh_ = rclcpp::Node::make_shared("mteleop_turtle");
-    nh_->declare_parameter("scale_angular", 2.0);
-    nh_->declare_parameter("scale_linear", 2.0);
+    nh_->declare_parameter("scale_angular", 0.5);
+    nh_->declare_parameter("scale_linear", 0.5);
 
-    twist_pub_ =
-        nh_->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 1);
+    twist_pub_ = nh_->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 1);
   }
 
   int keyLoop() {
