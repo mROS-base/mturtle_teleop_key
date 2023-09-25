@@ -39,5 +39,5 @@ R|V to increase/decrease angular speed by 10%.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `scale_angular` | double | Scaling factor for angular speed (default 0.5). |
-| `scale_linear` | double | Scaling factor for linear speed (default 0.5). |
+| `scale_angular` | double | Scaling factor for angular speed (default 0.25). |
+| `scale_linear` | double | Scaling factor for linear speed (default 0.25). |
