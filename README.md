@@ -29,6 +29,23 @@ R|V to increase/decrease angular speed by 10%.
 'Q' to quit.
 ```
 
+          i
+          ^
+    u <-  |  -> o
+        \ | /
+         +-+
+       +-+ +-+
+       |     |
+       +-----+
+        / | \
+    m <-  |  -> .
+          v
+          ,
+
+- j: rotate left
+- l: rotate right
+- k: stop
+
 ## Topics
 
 | Topic | Type | Direcetion | Description |
